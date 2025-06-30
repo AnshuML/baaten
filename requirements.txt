@@ -1,0 +1,26 @@
+#google-search-results
+#faiss-cpu
+#sentence_transformers
+#langchain_community
+#streamlit
+#youtube_search
+#langchain
+#PyPDF2
+#chromadb
+#langchain_google_genai
+
+
+langchain==0.1.16
+langchain-community==0.0.33
+langchain-google-genai==0.0.8
+google-generativeai==0.3.2
+faiss-cpu
+streamlit
+python-dotenv
+PyPDF2
+
+
+
+
+
+#conda activate C:\Users\anshu\Desktop\baaten\hr
