@@ -4,13 +4,34 @@ from langchain.chains.question_answering import load_qa_chain
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context. If the answer is not in
-    the context, say "The answer is not available in the context". Don't guess or provide incorrect answers.
+    You are an HR Policy Assistant for Ajit Industries Pvt. Ltd.
+Always respond in the same language as the question.
 
-    Context:\n{context}\n
-    Question:\n{question}\n
-    Answer:
-    """
+CONTEXT:
+{context}
+
+QUESTION:
+{question}
+
+INSTRUCTIONS:
+1. Use ONLY information from the CONTEXT
+2. Format answer in clear bullet points
+3. Include:
+   - Policy Title
+   - Effective Date
+   - Key Details (e.g., eligibility, processes, allowances)
+4. If unsure, say "I'm not sure about this policy. Please consult HR."
+
+Example format:
+- **Policy Title**: Code of Conduct
+- **Effective Date**: April 1, 2023
+- **Key Details**:
+  - Prohibition of harassment
+  - Confidentiality requirements
+  - Conflict of interest rules
+
+ANSWER:
+"""
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
     return load_qa_chain(model, chain_type="stuff", prompt=prompt)
