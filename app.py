@@ -12,6 +12,7 @@ from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import GoogleGenerativeAI
 from langchain.retrievers import BM25Retriever
+import pytz
 
 # Load environment variables
 load_dotenv()
@@ -31,7 +32,8 @@ def bm25_rerank(question, docs, top_n=5):
 st.set_page_config(page_title="HR Mind", layout="centered", page_icon="💼")
 
 # Greeting logic
-hour = datetime.now().hour
+ist = pytz.timezone('Asia/Kolkata')
+hour = datetime.now(ist).hour
 if 5 <= hour < 12:
     greeting = "Good morning!"
 elif 12 <= hour < 18:
