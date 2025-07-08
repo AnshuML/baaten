@@ -13,6 +13,7 @@ from langchain.prompts import PromptTemplate
 from langchain_google_genai import GoogleGenerativeAI
 from langchain.retrievers import BM25Retriever
 import pytz
+from googletrans import Translator
 
 # Load environment variables
 load_dotenv()
@@ -69,6 +70,30 @@ for msg in st.session_state.chat_history:
 
 # User input
 question = st.text_input("", placeholder="💬 Ask a question from HR Constitution:", key="user_input")
+
+# Add language selection
+language_options = {
+    'English': 'en',
+    'Hindi (हिन्दी)': 'hi',
+    'Tamil (தமிழ்)': 'ta',
+    'Telugu (తెలుగు)': 'te',
+    'Bengali (বাংলা)': 'bn',
+    'Malayalam (മലയാളം)': 'ml',
+    'Kannada (ಕನ್ನಡ)': 'kn',
+    'Gujarati (ગુજરાતી)': 'gu',
+    'Marathi (मराठी)': 'mr',
+    'Urdu (اردو)': 'ur',
+    'Odia (ଓଡ଼ିଆ)': 'or',
+    'Assamese (অসমীয়া)': 'as',
+    'Punjabi (ਪੰਜਾਬੀ)': 'pa',
+    'Sindhi (سنڌي)': 'sd',
+    'Yoruba (Nigeria)': 'yo',
+    'Igbo (Nigeria)': 'ig',
+    'Hausa (Nigeria)': 'ha',
+    'Sinhala (සිංහල)': 'si',
+}
+selected_language = st.selectbox("Select your language for the answer:", list(language_options.keys()), index=0)
+selected_lang_code = language_options[selected_language]
 
 if question:
     try:
@@ -131,13 +156,24 @@ if question:
             # Get response
             response = chain.invoke({"question": question})
 
-            # Display response
-            st.chat_message("user").markdown(question)
-            st.chat_message("assistant").markdown(response["result"])
+            # Ensure result is a string
+            result_str = str(response.get("result", ""))
 
-            # Save to chat history
-            st.session_state.chat_history.append({"role": "user", "content": question})
-            st.session_state.chat_history.append({"role": "assistant", "content": response["result"]})
+            # Translate if needed
+            if selected_lang_code != 'en':
+                translator = Translator()
+                try:
+                    translated = translator.translate(result_str, dest=selected_lang_code)
+                    result_str = translated.text
+                except Exception as trans_e:
+                    st.warning(f"Translation failed: {trans_e}")
+
+            st.chat_message("user").markdown(str(question))
+            st.chat_message("assistant").markdown(result_str)
+
+            # Save to chat history (only serializable content)
+            st.session_state.chat_history.append({"role": "user", "content": str(question)})
+            st.session_state.chat_history.append({"role": "assistant", "content": result_str})
 
     except Exception as e:
         st.error(f"❌ Error: {e}")
