@@ -33,3 +33,4 @@ rank-bm25
 
 
 #conda activate C:\Users\anshu\Desktop\baaten\hr
+#conda activate C:\Users\anshu\Desktop\baaten\hr
